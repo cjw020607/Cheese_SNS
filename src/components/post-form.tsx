@@ -1,5 +1,8 @@
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import styled from "styled-components";
+import { auth, db, storage } from "../routes/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const Form = styled.form`
 display:grid;
@@ -52,12 +55,12 @@ cursor:pointer;
     opacity:0.9;
 }
 `;
-export default function PostTweetForm(){
-    const [tweet,setTweet]=useState("");
+export default function PostForm(){
+    const [post,setPost]=useState("");
     const [isLoading,setIsLoading]=useState(false);
     const [file,setFile]=useState<File|null>(null);
     const onChange=(e:React.ChangeEvent<HTMLTextAreaElement>)=>{
-        setTweet(e.target.value);
+        setPost(e.target.value);
     };
     const onFileChange=(e: React.ChangeEvent<HTMLInputElement>)=>{
         const {files}=e.target;
@@ -65,17 +68,46 @@ export default function PostTweetForm(){
             setFile(files[0]);
 
     };
-    return <Form>
-        <TextArea maxLength={1000} onChange={onChange} placeholder="What is happening!?"/>
+
+    const onSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
+        e.preventDefault();
+        const user=auth.currentUser;
+        if(!user||isLoading||post===""||post.length>500)return;
+        try{
+            setIsLoading(true);
+            const doc=await addDoc(collection(db,"posts"),{
+                post,
+                createdAt:Date.now(),
+                username:user.displayName||"Anonymous",
+                userId:user.uid,
+            });
+            if(file){
+                // 이미지 파일이 어디에 저장되는지 지정할 수 있음
+                const locationRef=ref(storage,`posts/${user.uid}-${user.displayName}/${doc.id}`);
+                const result=await uploadBytes(locationRef,file);
+                // const url=await getDownloadURL(result.ref) //result의 퍼블릭 URL을 가져옴
+                // await updateDoc(doc,{
+                //     photo:url
+                // })
+
+            }
+            setPost("");
+            setFile(null);
+        }catch(e){
+            console.log(e)
+        }finally{
+            setIsLoading(false);
+        }
+    }
+
+    return <Form onSubmit={onSubmit}>
+        <TextArea value={post} maxLength={500} onChange={onChange} placeholder="What is happening!?" required/>
         <Row>
         <AttachFileBtn htmlFor="file">
             {file?"✅":"🖼️"}
-{/* //         <svg fill="none" strokeWidth={1.5} stroke="sandybrown" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-//   <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-// </svg> */}
         </AttachFileBtn>
         <AttachFileInput onChange={onFileChange} type="file" id="file" accept="image/*"/>
-        <SubmitBtn type="submit" value="Post Tweet"/>
+        <SubmitBtn type="submit" value="Post now!"/>
         </Row>
     </Form>
 }

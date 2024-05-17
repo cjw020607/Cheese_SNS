@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyCbFDaUW0n4QQ4TcQyPqT7sv5jPADY1qPo",
   authDomain: "cheese-sns-68ef9.firebaseapp.com",
@@ -15,3 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth=getAuth(app); 
+
+export const db=getFirestore(app);
+
+export const storage=getStorage(app);
