@@ -5,19 +5,19 @@ import { auth, db, storage } from "../routes/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const Form = styled.form`
-display:grid;
-grid-template-rows:3fr 1fr;
+display:flex;
+flex-direction:column;
 gap:10px;
 `;
 const TextArea = styled.textarea`
 border:2px solid white;
-padding:20px;
+padding:24px;
 border-radius:10px;
-font-size:16px;
+font-size:18px;
 width:100%;
 resize:none;
 &::placeholder{
-    font-size:16px;
+    font-size:18px;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 };
 &:focus{
@@ -85,10 +85,10 @@ export default function PostForm(){
                 // 이미지 파일이 어디에 저장되는지 지정할 수 있음
                 const locationRef=ref(storage,`posts/${user.uid}-${user.displayName}/${doc.id}`);
                 const result=await uploadBytes(locationRef,file);
-                // const url=await getDownloadURL(result.ref) //result의 퍼블릭 URL을 가져옴
-                // await updateDoc(doc,{
-                //     photo:url
-                // })
+                const url=await getDownloadURL(result.ref) //result의 퍼블릭 URL을 가져옴
+                await updateDoc(doc,{
+                    photo:url
+                })
 
             }
             setPost("");
@@ -101,7 +101,7 @@ export default function PostForm(){
     }
 
     return <Form onSubmit={onSubmit}>
-        <TextArea value={post} maxLength={500} onChange={onChange} placeholder="What is happening!?" required/>
+        <TextArea value={post} rows={8} maxLength={500} onChange={onChange} placeholder="What is happening!?" required/>
         <Row>
         <AttachFileBtn htmlFor="file">
             {file?"✅":"🖼️"}
