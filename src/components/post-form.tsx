@@ -83,7 +83,7 @@ export default function PostForm(){
             });
             if(file){
                 // 이미지 파일이 어디에 저장되는지 지정할 수 있음
-                const locationRef=ref(storage,`posts/${user.uid}-${user.displayName}/${doc.id}`);
+                const locationRef=ref(storage,`posts/${user.uid}/${doc.id}`);
                 const result=await uploadBytes(locationRef,file);
                 const url=await getDownloadURL(result.ref) //result의 퍼블릭 URL을 가져옴
                 await updateDoc(doc,{

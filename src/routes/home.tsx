@@ -9,13 +9,10 @@ display:flex;
 flex-direction:column;
 gap:30px;
 overfow-y:scroll;
-// grid-template-rows:1fr 0fr 5fr;
-// height:1200px; 
 `;
 const Title=styled.span`
-// height:100%;
-font-size:44px;
-// padding:20px;
+font-size:36px;
+
 `;
 export default function Home(){
     return (
