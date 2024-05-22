@@ -10,7 +10,7 @@ flex-direction:column;
 gap:10px;
 `;
 const TextArea = styled.textarea`
-border:2px solid white;
+border:3px solid white;
 padding:24px;
 border-radius:10px;
 font-size:18px;

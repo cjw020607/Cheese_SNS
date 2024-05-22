@@ -3,7 +3,7 @@ import { auth, db, storage } from "./firebase";
 import { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Unsubscribe, updateProfile } from "firebase/auth";
-import { collection, getDocs, limit, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, doc, getDocs, limit, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { IPost } from "../components/timeline";
 import Post from "../components/post";
 
@@ -85,7 +85,18 @@ export default function Profile() {
         await updateProfile(user,{
             displayName:newName
         });
-        setName(newName);
+        await setName(newName);
+        
+        // 유저 ID로 모든 게시글을 검색하고 게시자 이름 업데이트
+        const postsQuery=query(
+            collection(db,"posts"),
+        where("userId","==",user?.uid));
+        const snapshot=await getDocs(postsQuery);
+        snapshot.docs.map(doc=>{
+            updateDoc(doc.ref,{
+                username:newName
+            })
+        })
     }
     useEffect(() => {
         let unsubscribe: Unsubscribe | null = null;
