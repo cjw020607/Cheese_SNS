@@ -3,7 +3,7 @@ import { IPost } from "./timeline";
 import { auth, db, storage } from "../routes/firebase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { update } from "firebase/database";
+
 
 const Wrapper = styled.div`
 display: flex;

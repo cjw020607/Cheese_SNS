@@ -3,9 +3,10 @@ import { auth, db, storage } from "./firebase";
 import { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Unsubscribe, updateProfile } from "firebase/auth";
-import { collection, doc, getDocs, limit, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
+
 import { IPost } from "../components/timeline";
 import Post from "../components/post";
+import { collection, getDocs, limit, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 
 const Wrapper = styled.div`
 display:flex;

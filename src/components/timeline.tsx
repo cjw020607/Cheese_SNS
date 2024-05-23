@@ -1,9 +1,8 @@
-import { collection, getDocs, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { db } from "../routes/firebase";
 import Post from "./post";
-import { json } from "react-router-dom";
 import { Unsubscribe } from "firebase/auth";
 
 export interface IPost{
